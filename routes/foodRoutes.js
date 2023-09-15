@@ -4,7 +4,7 @@ const multer=require('multer')
 const path=require("path")
 const fs=require("fs")
 
-const uploadDirectory=path.join(__dirname,'../upload');
+const uploadDirectory=path.join(__dirname,'../client/build/upload');
 fs.mkdirSync(uploadDirectory,{recursive:true})
 
 const storage=multer.memoryStorage();
@@ -27,7 +27,7 @@ router.post("/addfood",upload.single("foodimg"),async(req,res,next)=>{
     let {originalname}=req.file;
     originalname=originalname.split(" ").join("");
     const buffer=req.file.buffer;
-    fs.writeFileSync(`upload/${originalname}`,buffer)
+    fs.writeFileSync(`client/build/upload/${originalname}`,buffer)
 
     let img=originalname;
       const food=await Foods.create({
