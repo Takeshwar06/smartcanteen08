@@ -1,5 +1,6 @@
 const express=require("express")
 const cors=require("cors")
+const path = require('path')
 const mongoose=require("mongoose")
 const foodRoutes =require("./routes/foodRoutes")
 const orderRouter =require("./routes/orderRoute")
@@ -37,7 +38,10 @@ mongoose.connect(process.env.MONGO_URL,()=>{
 // })
 
   // static file
-    app.use(express.static("client/build"));
+    app.use(express.static("./client/build"));
+    app.get("*",function(req,res){
+        res.sendfile(path.join(__dirname,"./client/build/index.html"))
+    })
 
 
 const server=app.listen(process.env.PORT||5000,()=>{
