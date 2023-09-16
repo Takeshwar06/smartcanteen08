@@ -7,7 +7,14 @@ const fs=require("fs")
 const uploadDirectory=path.join(__dirname,'../client/build/upload');
 fs.mkdirSync(uploadDirectory,{recursive:true})
 
-const storage=multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDirectory);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
 const upload=multer({storage});
 
 //, login, getAllUsers   //
@@ -24,12 +31,10 @@ router.post("/addfood",upload.single("foodimg"),async(req,res,next)=>{
     if(checkFood){
       return res.json({msg:"this food is already added",status:false})
     }
-    let {originalname}=req.file;
-    originalname=originalname.split(" ").join("");
-    const buffer=req.file.buffer;
-    fs.writeFileSync(`client/build/upload/${originalname}`,buffer)
 
-    let img=originalname;
+
+
+    let img=req.file.filename;
       const food=await Foods.create({
       foodname:foodname,
       foodprice:foodprice,
